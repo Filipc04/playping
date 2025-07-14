@@ -54,34 +54,45 @@ function App() {
   useEffect(() => {
     const sessionsCol = collection(db, "sessions");
     const sessionsQuery = query(sessionsCol, orderBy("createdAt", "desc"));
-
+  
     const unsubscribe = onSnapshot(sessionsQuery, (snapshot) => {
       const sessionsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
-
+  
       setSessions(sessionsData);
-
-      // Check if the topmost session is new
+  
       const latestSession = sessionsData[0];
       if (latestSession) {
-        const createdAt = latestSession.createdAt?.toMillis?.() || new Date(latestSession.createdAt).getTime();
-
+        const createdAtTimestamp = latestSession.createdAt;
+        let createdAt = 0;
+  
+        if (createdAtTimestamp) {
+          if (typeof createdAtTimestamp.toMillis === 'function') {
+            createdAt = createdAtTimestamp.toMillis();
+          } else {
+            createdAt = new Date(createdAtTimestamp).getTime();
+          }
+        } else {
+          createdAt = Date.now();
+        }
+  
+        // Only notify if we have a previous timestamp and this is newer
         if (latestTimestampRef.current && createdAt > latestTimestampRef.current) {
-          // Send notification to main process
           if (window?.electronAPI?.sendNotification) {
-            window.electronAPI.sendNotification(
-              `New session: ${latestSession.title}`
-            );
+            window.electronAPI.sendNotification(`New session: ${latestSession.title}`);
           }
         }
+  
+        // Update ref to current latest timestamp
         latestTimestampRef.current = createdAt;
       }
     });
-
+  
     return () => unsubscribe();
   }, []);
+  
 
   const handleVote = async (sessionId, voteType) => {
     const previousVote = userVotes[sessionId];
@@ -168,37 +179,55 @@ function App() {
         <div className="sessions-container">
           {sessions.map((session) => (
             <div key={session.id} className="session-item">
-              <h3>{session.title}</h3>
-              <p><strong>Name:</strong> {session.host}</p>
-              <p><strong>Time:</strong> {session.scheduledAt}</p>
-              <p><strong>Game:</strong> {session.game}</p>
+            <h3>{session.title}</h3>
+          
+            {/* Removed old Name display */}
+          
+            <p><strong>When:</strong> {session.scheduledAt}</p>
+            <p><strong>Game:</strong> {session.game}</p>
+          
+            {session["other-text"] && session["other-text"].trim() !== "" && (
               <p><strong>Other:</strong> {session["other-text"]}</p>
-
-              <div className="session-buttons">
-                <button
-                  className={`session-button-left ${userVotes[session.id] === 'accepted' ? 'voted' : ''}`}
-                  onClick={() => handleVote(session.id, 'accepted')}
-                >
-                  I'll be there!
-                </button>
-                <button
-                  className={`session-button-right ${userVotes[session.id] === 'declined' ? 'voted' : ''}`}
-                  onClick={() => handleVote(session.id, 'declined')}
-                >
-                  I can't
-                </button>
-              </div>
-
-              <div className="session-votes">
-                <span className="vote-yes">✓ {session.accepted || 0}</span>
-                <span className="vote-no">✗ {session.declined || 0}</span>
-              </div>
+            )}
+          
+            <div className="posted-info">
+              Posted by <strong>{session.host}</strong> at {formatTimestamp(session.createdAt)}
             </div>
+          
+            {/* ...rest stays the same */}
+            <div className="session-buttons">
+              <button
+                className={`session-button-left ${userVotes[session.id] === 'accepted' ? 'voted' : ''}`}
+                onClick={() => handleVote(session.id, 'accepted')}
+              >
+                I'll be there!
+              </button>
+              <button
+                className={`session-button-right ${userVotes[session.id] === 'declined' ? 'voted' : ''}`}
+                onClick={() => handleVote(session.id, 'declined')}
+              >
+                I can't
+              </button>
+            </div>
+          
+            <div className="session-votes">
+              <span className="vote-yes">✓ {session.accepted || 0}</span>
+              <span className="vote-no">✗ {session.declined || 0}</span>
+            </div>
+          </div>
           ))}
         </div>
       )}
     </div>
   );
 }
+
+function formatTimestamp(timestamp) {
+  if (!timestamp) return '';
+  // If it's Firestore Timestamp object, use toDate()
+  const dateObj = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  return dateObj.toLocaleString(); // e.g. "7/14/2025, 3:30:00 PM"
+}
+
 
 export default App;

@@ -2,6 +2,14 @@ const { app, BrowserWindow, Tray, Notification, Menu } = require('electron');
 const path = require('path');
 const { ipcMain } = require('electron');
 
+function isWin() {
+  return process.platform === 'win32';
+}
+
+
+if (isWin()) {
+  app.setAppUserModelId('PlayPing'); 
+}
 
 let win;
 let tray;
@@ -43,7 +51,8 @@ app.whenReady().then(() => {
   ipcMain.on('show-session-created-notification', (_, message) => {
     new Notification({
       title: 'Your friends want to game!',
-      body: 'Let them know if youre available or not.'
+      body: 'Let them know if youre available or not.',
+      icon: path.join(__dirname, 'logo.png') 
     }).show();
   });
   

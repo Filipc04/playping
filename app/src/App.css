@@ -209,8 +209,7 @@ body::-webkit-scrollbar {
 }
 
 .session-item {
-  position: relative; /* needed for absolute positioning inside */
-  /* your existing styles... */
+  position: relative; 
 }
 
 .session-votes {
@@ -245,4 +244,20 @@ body::-webkit-scrollbar {
   box-shadow: 0 0 12px #af4c4c;
   color: white;
   border: #af4c4c;
+}
+
+.session-item {
+  position: relative;
+  /* existing styles... */
+}
+
+.posted-info {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 14px;
+  color: #AD49E1;
+  font-weight: 600;
+  font-family: "Poiret One", sans-serif;
+  user-select: none;
 }
