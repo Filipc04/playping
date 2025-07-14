@@ -7,6 +7,12 @@ let win;
 let tray;
 
 function createWindow() {
+  if (win) {
+    
+    win.show();
+    return;
+  }
+
   win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -18,10 +24,20 @@ function createWindow() {
     },
     autoHideMenuBar: true
   });
-  
+
   win.loadURL('http://localhost:3000');
   win.setMenu(null);
+
+  win.on('close', (event) => {
+    if (!app.isQuiting) {
+      event.preventDefault();
+      win.hide();
+    } else {
+      win = null; 
+    }
+  });
 }
+
 
 app.whenReady().then(() => {
   ipcMain.on('show-session-created-notification', () => {
@@ -32,7 +48,7 @@ app.whenReady().then(() => {
   });
   
   
-  app.setName('PlayPing');  // Sets app name (used in notifications)
+  app.setName('PlayPing');  
 
   createWindow();
 
@@ -40,14 +56,23 @@ app.whenReady().then(() => {
   tray.setToolTip('PlayPing');
 
   tray.on('click', () => {
-    win.isVisible() ? win.hide() : win.show();
+    if (!win) {
+      createWindow();  
+    } else {
+      win.isVisible() ? win.hide() : win.show();
+    }
   });
+  
 
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Show/Hide',
       click: () => {
-        win.isVisible() ? win.hide() : win.show();
+        if (!win) {
+          createWindow();
+        } else {
+          win.isVisible() ? win.hide() : win.show();
+        }
       }
     },
     {
@@ -58,17 +83,21 @@ app.whenReady().then(() => {
       }
     }
   ]);
+  
   tray.setContextMenu(contextMenu);
 });
 
-// On macOS, recreate window if dock icon clicked and no windows open
+
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-// Quit when all windows closed (except on macOS)
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+
+app.on('window-all-closed', (e) => {
+  
+  e.preventDefault();
 });
+
+
+
+
