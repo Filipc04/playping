@@ -48,16 +48,21 @@ function createWindow() {
 
 
 app.whenReady().then(() => {
+  
+  app.setLoginItemSettings({
+    openAtLogin: true,
+    path: process.execPath
+  });
+
   ipcMain.on('show-session-created-notification', (_, message) => {
     new Notification({
       title: 'Your friends want to game!',
-      body: 'Let them know if youre available or not.',
-      icon: path.join(__dirname, 'logo.png') 
+      body: 'Let them know if you’re available or not.',
+      icon: path.join(__dirname, 'logo.png')
     }).show();
   });
-  
-  
-  app.setName('PlayPing');  
+
+  app.setName('PlayPing');
 
   createWindow();
 

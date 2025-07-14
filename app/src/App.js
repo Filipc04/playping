@@ -131,8 +131,12 @@ function App() {
       </button>
 
       {!showForm && (
-        <h1 className="app-title">PlayPing 🕭</h1>
-      )}
+      <h1 className="app-title">
+        PlayPing 
+        <img src="/logo_stor.png" alt="Logo" className="app-logo" />
+      </h1>
+    )}
+
 
       {showForm && (
         <form className="form" onSubmit={handleSubmit}>

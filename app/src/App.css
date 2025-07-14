@@ -112,7 +112,7 @@ form button:hover {
 
 
 .create-session-button {
-  position: absolute;
+  position: fixed;
   top: 20px;
   left: 20px;
   padding: 10px 20px;
@@ -123,9 +123,15 @@ form button:hover {
   border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 0 10px rgb(0, 0, 0);
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* smoother scaling */
   font-family: "Poiret One", sans-serif;
 }
+
+.create-session-button:hover {
+  transform: scale(1.05); /* grow by 5% */
+  box-shadow: 0 0 20px #AD49E1; /* add light glow */
+}
+
 
 
 .app-title {
@@ -260,4 +266,15 @@ body::-webkit-scrollbar {
   font-weight: 600;
   font-family: "Poiret One", sans-serif;
   user-select: none;
+
+  /* 👇 Add this line */
+  transform: translateZ(0);
+}
+
+
+.app-logo {
+  height: 75px;      /* adjust as needed */
+  margin-right: 10px;
+  vertical-align: middle; /* keeps it aligned nicely with text */
+  color: white;
 }
