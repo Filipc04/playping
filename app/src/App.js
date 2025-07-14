@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { collection, addDoc, getDocs, query, orderBy } from "firebase/firestore";
+import { doc, updateDoc, increment } from "firebase/firestore";
 import { db } from "./firebase"; // import your configured Firestore instance
 import React, { useState, useEffect } from "react";
 
@@ -8,6 +9,9 @@ import React, { useState, useEffect } from "react";
 function App() {
   const [showForm, setShowForm] = useState(false);
   const [sessions, setSessions] = useState([]);
+  const [userVotes, setUserVotes] = useState({}); 
+
+
 
   const [formData, setFormData] = useState({
     title: '',
@@ -69,6 +73,44 @@ function App() {
   useEffect(() => {
     fetchSessions();
   }, []);
+  
+  const handleVote = async (sessionId, voteType) => {
+    // voteType is "accepted" or "declined"
+  
+    const previousVote = userVotes[sessionId]; // null, "accepted" or "declined"
+  
+    if (previousVote === voteType) {
+      // User clicked the same vote again, maybe ignore or toggle off
+      return; // or optionally remove vote if you want
+    }
+  
+    const sessionRef = doc(db, "sessions", sessionId);
+    
+    const updates = {};
+  
+    if (previousVote) {
+      // Decrement previous vote count by 1
+      updates[previousVote] = increment(-1);
+    }
+    // Increment new vote count by 1
+    updates[voteType] = increment(1);
+  
+    try {
+      await updateDoc(sessionRef, updates);
+  
+      // Update local vote record for user
+      setUserVotes({
+        ...userVotes,
+        [sessionId]: voteType
+      });
+  
+      // Refresh sessions list to show updated counts
+      fetchSessions();
+  
+    } catch (error) {
+      console.error("Error updating vote: ", error);
+    }
+  };
   
   
 
@@ -137,9 +179,20 @@ function App() {
             <p><strong>Other:</strong> {session["other-text"]}</p>
 
             <div className="session-buttons">
-              <button className="session-button-left">I'll be there!</button>
-              <button className="session-button-right">I can't</button>
-            </div>
+            <button
+              className="session-button-left"
+              onClick={() => handleVote(session.id, "accepted")}
+            >
+              I'll be there!
+            </button>
+            <button
+              className="session-button-right"
+              onClick={() => handleVote(session.id, "declined")}
+            >
+              I can't
+            </button>
+          </div>
+
 
             <div className="session-votes">
               <span className="vote-yes">✓ {session.accepted || 0}</span>
