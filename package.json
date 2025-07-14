@@ -2,15 +2,51 @@
   "name": "my-gaming-beacon",
   "version": "1.0.0",
   "main": "main.js",
-  "productName": "PlayPing",     
+  "productName": "PlayPing",
+  "description": "PlayPing - Your gaming session notifier",
+  "author": "Filip Carlsson filip.carlsson2004@gmail.com",
   "scripts": {
     "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
     "start-react": "cd app && npm start",
-    "start-electron": "wait-on tcp:3000 && npx electron ."
+    "start-electron": "wait-on tcp:3000 && npx electron .",
+    "dist": "npm run build-react && electron-builder",
+    "build-react": "cd app && npm run build"
+  },
+  "build": {
+    "appId": "com.yourname.playping",
+    "productName": "PlayPing",
+    "icon": "assets/logo.ico",
+    "directories": {
+      "buildResources": "assets"
+    },
+    "files": [
+      "app/build/**/*",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+
+    "extraResources": [
+      {
+        "from": "assets/",
+        "to": "assets",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/logo.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "devDependencies": {
     "concurrently": "^8.2.0",
     "electron": "^30.0.0",
+    "electron-builder": "^26.0.12",
     "wait-on": "^7.0.1"
   }
 }

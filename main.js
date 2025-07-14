@@ -33,7 +33,8 @@ function createWindow() {
     autoHideMenuBar: true
   });
 
-  win.loadURL('http://localhost:3000');
+  win.loadFile('app/build/index.html');
+
   win.setMenu(null);
 
   win.on('close', (event) => {

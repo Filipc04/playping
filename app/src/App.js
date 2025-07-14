@@ -43,14 +43,13 @@ function App() {
       setFormData({ title: "", name: "", time: "", game: "", other: "" });
       setShowForm(false);
 
-      // NOTE: We do NOT need to manually call fetchSessions anymore!
-      // The onSnapshot listener will pick up the change automatically.
+      
     } catch (error) {
       console.error("Error adding session: ", error);
     }
   };
 
-  // Real-time listener for sessions
+
   useEffect(() => {
     const sessionsCol = collection(db, "sessions");
     const sessionsQuery = query(sessionsCol, orderBy("createdAt", "desc"));
@@ -78,14 +77,14 @@ function App() {
           createdAt = Date.now();
         }
   
-        // Only notify if we have a previous timestamp and this is newer
+      
         if (latestTimestampRef.current && createdAt > latestTimestampRef.current) {
           if (window?.electronAPI?.sendNotification) {
             window.electronAPI.sendNotification(`New session: ${latestSession.title}`);
           }
         }
   
-        // Update ref to current latest timestamp
+        
         latestTimestampRef.current = createdAt;
       }
     });
@@ -185,7 +184,7 @@ function App() {
             <div key={session.id} className="session-item">
             <h3>{session.title}</h3>
           
-            {/* Removed old Name display */}
+            
           
             <p><strong>When:</strong> {session.scheduledAt}</p>
             <p><strong>Game:</strong> {session.game}</p>
@@ -198,7 +197,7 @@ function App() {
               Posted by <strong>{session.host}</strong> at {formatTimestamp(session.createdAt)}
             </div>
           
-            {/* ...rest stays the same */}
+          
             <div className="session-buttons">
               <button
                 className={`session-button-left ${userVotes[session.id] === 'accepted' ? 'voted' : ''}`}
@@ -228,9 +227,9 @@ function App() {
 
 function formatTimestamp(timestamp) {
   if (!timestamp) return '';
-  // If it's Firestore Timestamp object, use toDate()
+ 
   const dateObj = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-  return dateObj.toLocaleString(); // e.g. "7/14/2025, 3:30:00 PM"
+  return dateObj.toLocaleString();
 }
 
 
