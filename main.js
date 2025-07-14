@@ -40,7 +40,7 @@ function createWindow() {
 
 
 app.whenReady().then(() => {
-  ipcMain.on('show-session-created-notification', () => {
+  ipcMain.on('show-session-created-notification', (_, message) => {
     new Notification({
       title: 'Your friends want to game!',
       body: 'Let them know if youre available or not.'

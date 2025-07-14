@@ -1,7 +1,6 @@
+// preload.js
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electron', {
-  ipcRenderer: {
-    send: (channel, data) => ipcRenderer.send(channel, data)
-  }
+contextBridge.exposeInMainWorld('electronAPI', {
+  sendNotification: (message) => ipcRenderer.send('show-session-created-notification', message)
 });
