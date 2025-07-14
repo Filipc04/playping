@@ -1,5 +1,7 @@
 const { app, BrowserWindow, Tray, Notification, Menu } = require('electron');
 const path = require('path');
+const { ipcMain } = require('electron');
+
 
 let win;
 let tray;
@@ -8,19 +10,28 @@ function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    icon: path.join(__dirname, 'logo.png'), // Your app icon
+    icon: path.join(__dirname, 'logo.png'),
     webPreferences: {
       nodeIntegration: false,
-      contextIsolation: true
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     },
     autoHideMenuBar: true
   });
-
+  
   win.loadURL('http://localhost:3000');
   win.setMenu(null);
 }
 
 app.whenReady().then(() => {
+  ipcMain.on('show-session-created-notification', () => {
+    new Notification({
+      title: 'Your friends want to game!',
+      body: 'Let them know if youre available or not.'
+    }).show();
+  });
+  
+  
   app.setName('PlayPing');  // Sets app name (used in notifications)
 
   createWindow();
@@ -48,11 +59,6 @@ app.whenReady().then(() => {
     }
   ]);
   tray.setContextMenu(contextMenu);
-
-  new Notification({
-    title: 'Your friends want to game!',
-    body: 'Let them know if youre available or not.'
-  }).show();
 });
 
 // On macOS, recreate window if dock icon clicked and no windows open

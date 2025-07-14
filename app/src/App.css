@@ -99,7 +99,7 @@ form button:hover {
   color:rgb(255, 173, 255);
 }
 
-/* Container */
+
 .app-container {
   position: relative;
   min-height: 100vh;
@@ -110,7 +110,7 @@ form button:hover {
   font-family: 'Pixelify Sans', sans-serif;
 }
 
-/* Create Session button */
+
 .create-session-button {
   position: absolute;
   top: 20px;
@@ -127,7 +127,7 @@ form button:hover {
   font-family: "Poiret One", sans-serif;
 }
 
-/* Title */
+
 .app-title {
   font-size: 72px;
   margin-top: 10vh;
@@ -135,12 +135,12 @@ form button:hover {
   text-shadow: 0 0 20px rgb(0, 0, 0);
 }
 
-/* Sessions container */
+
 .sessions-container {
   margin-top: 40px;
 }
 
-/* Each session item */
+
 .session-item {
   border: 2px solid #AD49E1;
   background-color: #2f2c48;
@@ -151,7 +151,7 @@ form button:hover {
   text-align: left;
 }
 
-/* Buttons container inside session */
+
 .session-buttons {
   display: flex;
   justify-content: flex-end;
@@ -159,24 +159,25 @@ form button:hover {
   margin-top: 20px;
 }
 
-/* Left button ("I'll be there") */
 .session-button-left {
-  background-color: #AD49E1;
+  background-color: #141130;
   color: #EBD3F8;
-  border: none;
+  border: 2px solid #AD49E1;
   border-radius: 6px;
   padding: 8px 14px;
   cursor: pointer;
   box-shadow: 0 0 8px #AD49E1;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  font-family: "Poiret One", sans-serif;
 }
 
 .session-button-left:hover {
   background-color: #7A1CAC;
+  
 }
 
-/* Right button ("I can't") */
+
 .session-button-right {
   background-color: #141130;
   color: #EBD3F8;
@@ -187,17 +188,19 @@ form button:hover {
   box-shadow: 0 0 8px #7A1CAC;
   font-weight: 600;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: "Poiret One", sans-serif;
 }
 
 .session-button-right:hover {
   background-color: #7A1CAC;
   color: #fff;
+
 }
 
 html, body {
-  overflow: auto; /* or scroll */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  overflow: auto; 
+  -ms-overflow-style: none;  
+  scrollbar-width: none;  
 }
 
 html::-webkit-scrollbar,
@@ -223,9 +226,23 @@ body::-webkit-scrollbar {
 }
 
 .vote-yes {
-  color: #4CAF50; /* green check */
+  color: #4CAF50;
 }
 
 .vote-no {
-  color: #E57373; /* red cross */
+  color: #E57373; 
+}
+
+.session-button-left.voted {
+  background-color: #4CAF50; 
+  box-shadow: 0 0 12px #4CAF50;
+  color: white;
+  border: #4CAF50;
+}
+
+.session-button-right.voted {
+  background-color: #af4c4c; 
+  box-shadow: 0 0 12px #af4c4c;
+  color: white;
+  border: #af4c4c;
 }

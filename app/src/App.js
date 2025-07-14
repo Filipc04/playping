@@ -46,7 +46,12 @@ function App() {
         createdAt: new Date(),
         title: formData.title
       });
-  
+      
+      if (window && window.electron && window.electron.ipcRenderer) {
+        window.electron.ipcRenderer.send('show-session-created-notification');
+      }
+
+
       setFormData({ title: "", name: "", time: "", game: "", other: "" });
       setShowForm(false);
   
@@ -180,17 +185,18 @@ function App() {
 
             <div className="session-buttons">
             <button
-              className="session-button-left"
-              onClick={() => handleVote(session.id, "accepted")}
+              className={`session-button-left ${userVotes[session.id] === 'accepted' ? 'voted' : ''}`}
+              onClick={() => handleVote(session.id, 'accepted')}
             >
               I'll be there!
             </button>
             <button
-              className="session-button-right"
-              onClick={() => handleVote(session.id, "declined")}
+              className={`session-button-right ${userVotes[session.id] === 'declined' ? 'voted' : ''}`}
+              onClick={() => handleVote(session.id, 'declined')}
             >
               I can't
             </button>
+
           </div>
 
 
