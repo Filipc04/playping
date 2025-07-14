@@ -1,0 +1,16 @@
+{
+  "name": "my-gaming-beacon",
+  "version": "1.0.0",
+  "main": "main.js",
+  "productName": "PlayPing",     
+  "scripts": {
+    "start": "concurrently \"npm run start-react\" \"npm run start-electron\"",
+    "start-react": "cd app && npm start",
+    "start-electron": "wait-on tcp:3000 && npx electron ."
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "electron": "^30.0.0",
+    "wait-on": "^7.0.1"
+  }
+}
